@@ -76,18 +76,18 @@ function SectionLabel({ children }: { children: string }) {
 }
 
 export default function Home() {
-	const [activeTab, setActiveTab] = useState<"eat" | "drink">("eat");
+	const [activeTab, setActiveTab] = useState<"eat" | "drink">("drink");
 	const menuItems = activeTab === "eat" ? eatMenu : drinkMenu;
 
 	return (
-		<main className="scroll-smooth bg-[#fdf5e6] text-[18px] leading-[1.5] text-black [filter:grayscale(75%)]">
-			<div className="fixed top-0 z-50 w-full bg-black px-2 py-2 shadow-md">
-				<div className="flex w-full items-center">
+		<main className="scroll-smooth bg-[#fdf5e6] text-[18px] leading-normal text-black">
+			<div className="fixed top-0 left-0 right-0 z-1 w-full">
+				<div className="grid grid-cols-4 bg-black p-2">
 					{navItems.map((item, idx) => (
 						<a
 							key={item.label}
 							href={idx === 0 ? "#" : item.href}
-							className="w-1/4 px-4 py-2 text-center text-[15px] text-white hover:bg-[#cccccc] hover:text-black"
+							className="block bg-black px-4 py-2 text-center text-[15px] text-white hover:bg-[#cccccc] hover:text-black"
 						>
 							{item.label}
 						</a>
@@ -103,37 +103,37 @@ export default function Home() {
 					Open from 6am to 5pm
 				</div>
 				<div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white">
-					<span className="block text-[90px] leading-[1.5]">the</span>
-					<span className="block text-[90px] leading-[1.5]">Cafe</span>
+					<span className="block text-[90px] leading-normal">the</span>
+					<span className="block text-[90px] leading-normal">Cafe</span>
 				</div>
 				<div className="absolute bottom-3 right-3 px-2 py-1 text-[15px] text-white">
 					15 Adr street, 5015
 				</div>
 			</header>
 
-			<div className="mx-auto max-w-[700px] px-4">
+			<div className="mx-auto max-w-175 px-4">
 				<section id="about" className="py-16">
 					<SectionLabel>ABOUT THE CAFE</SectionLabel>
 
-					<p className="my-[18px]">
+					<p className="my-4.5">
 						The Cafe was founded in blabla by Mr. Smith in lorem ipsum dolor sit amet,
 						consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
 						dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
 						ullamco laboris nisi ut aliquip ex ea commodo consequat.
 					</p>
 
-					<p className="my-[18px]">
+					<p className="my-4.5">
 						In addition to our full espresso and brew bar menu, we serve fresh
 						made-to-order breakfast and lunch sandwiches, as well as a selection of
 						sides and salads and other good stuff.
 					</p>
 
-					<div className="my-4 border-l-[6px] border-[#ccc] bg-[#f1f1f1] px-4 py-[1px]">
-						<p className="my-[18px] italic">
+					<div className="my-4 border-l-[6px] border-[#ccc] bg-[#f1f1f1] px-4 py-px">
+						<p className="my-4.5 italic">
 							&ldquo;Use products from nature for what it&apos;s worth - but never too
 							early, nor too late.&rdquo; Fresh is the new sweet.
 						</p>
-						<p className="my-[18px]">Chef, Coffeeist and Owner: Liam Brown</p>
+						<p className="my-4.5">Chef, Coffeeist and Owner: Liam Brown</p>
 					</div>
 
 					<img
@@ -142,10 +142,10 @@ export default function Home() {
 						className="mt-4 w-full"
 					/>
 
-					<p className="my-[18px]">
+					<p className="my-4.5">
 						<strong>Opening hours:</strong> everyday from 6am to 5pm.
 					</p>
-					<p className="my-[18px]">
+					<p className="my-4.5">
 						<strong>Address:</strong> 15 Adr street, 5015, NY
 					</p>
 				</section>
@@ -153,35 +153,35 @@ export default function Home() {
 				<section id="menu" className="py-16">
 					<SectionLabel>THE MENU</SectionLabel>
 
-					<div className="mt-12 bg-white p-2 shadow-[0_2px_5px_rgba(0,0,0,0.16),0_2px_10px_rgba(0,0,0,0.12)]">
-						<div className="grid grid-cols-2 bg-white text-center shadow-[0_2px_5px_rgba(0,0,0,0.16),0_2px_10px_rgba(0,0,0,0.12)]">
-							<button
-								type="button"
-								onClick={() => setActiveTab("eat")}
-								className={`m-1 block px-4 py-2 text-[18px] ${
-									activeTab === "eat" ? "bg-[#616161] text-white" : "bg-white text-black"
-								}`}
-							>
-								Eat
-							</button>
-							<button
-								type="button"
-								onClick={() => setActiveTab("drink")}
-								className={`m-1 block px-4 py-2 text-[18px] ${
-									activeTab === "drink"
-										? "bg-[#616161] text-white"
-										: "bg-white text-black"
-								}`}
-							>
-								Drink
-							</button>
+					<div className="mx-auto max-w-175">
+						<div className="grid grid-cols-2 p-2 text-center shadow-[0_2px_5px_0_rgba(0,0,0,0.16),0_2px_10px_0_rgba(0,0,0,0.12)]">
+						<button
+							type="button"
+							onClick={() => setActiveTab("eat")}
+							className={`m-0 block px-4 py-0 text-[18px] ${
+								activeTab === "eat" ? "bg-[#616161] text-white" : "bg-transparent text-black"
+							}`}
+						>
+							Eat
+						</button>
+						<button
+							type="button"
+							onClick={() => setActiveTab("drink")}
+							className={`m-0 block px-4 py-0 text-[18px] ${
+								activeTab === "drink"
+									? "bg-[#616161] text-white"
+									: "bg-transparent text-black"
+							}`}
+						>
+							Drink
+						</button>
 						</div>
 
-						<div className="px-4 py-12">
+						<div className="bg-white px-4 py-12 shadow-[0_2px_5px_0_rgba(0,0,0,0.16),0_2px_10px_0_rgba(0,0,0,0.12)]">
 							{menuItems.map((item) => (
 								<div key={item.name}>
-									<h5 className="my-[10px] text-[24px] font-normal">{item.name}</h5>
-									<p className="my-[18px] text-[#757575]">
+									<h5 className="my-0 text-[18px] font-normal">{item.name}</h5>
+									<p className="my-4.5 text-[#757575]">
 										{item.description} {item.price}
 									</p>
 								</div>
@@ -199,27 +199,27 @@ export default function Home() {
 				<section id="where" className="py-16">
 					<SectionLabel>WHERE TO FIND US</SectionLabel>
 
-					<p className="my-[18px]">Find us at some address at some place.</p>
+					<p className="my-4.5">Find us at some address at some place.</p>
 					<img
 						src="https://www.w3schools.com/w3images/map.jpg"
 						alt="Cafe location map"
 						className="w-full"
 					/>
 
-					<p className="my-[18px]">
+					<p className="my-4.5">
 						<span className="bg-black px-2 py-1 text-[15px] text-white">FYI!</span> We
 						offer full-service catering for any event, large or small. We understand
 						your needs and we will cater the food to satisfy the biggerst criteria of
 						them all, both look and taste.
 					</p>
 
-					<p className="my-[18px]">
+					<p className="my-4.5">
 						<strong>Reserve</strong> a table, ask for today&apos;s special or just send us a
 						message:
 					</p>
 
 					<form className="mt-5">
-						<p className="my-[18px]">
+						<p className="my-4.5">
 							<input
 								type="text"
 								placeholder="Name"
@@ -227,7 +227,7 @@ export default function Home() {
 								className="block w-full border border-[#ccc] bg-white px-4 py-4"
 							/>
 						</p>
-						<p className="my-[18px]">
+						<p className="my-4.5">
 							<input
 								type="number"
 								placeholder="How many people"
@@ -235,15 +235,17 @@ export default function Home() {
 								className="block w-full border border-[#ccc] bg-white px-4 py-4"
 							/>
 						</p>
-						<p className="my-[18px]">
+						<p className="my-4.5">
 							<input
 								type="datetime-local"
+								placeholder="Date and time"
+								title="Date and time"
 								defaultValue="2020-11-16T20:00"
 								required
 								className="block w-full border border-[#ccc] bg-white px-4 py-4"
 							/>
 						</p>
-						<p className="my-[18px]">
+						<p className="my-4.5">
 							<input
 								type="text"
 								placeholder="Message \\ Special requirements"
@@ -251,7 +253,7 @@ export default function Home() {
 								className="block w-full border border-[#ccc] bg-white px-4 py-4"
 							/>
 						</p>
-						<p className="my-[18px]">
+						<p className="my-4.5">
 							<button
 								type="submit"
 								className="cursor-pointer bg-black px-4 py-2 text-[18px] text-white hover:bg-[#ccc] hover:text-black"

@@ -68,7 +68,7 @@ const drinkMenu = [
 function SectionLabel({ children }: { children: string }) {
 	return (
 		<h5 className="py-16 text-center">
-			<span className="inline-block bg-black px-2 py-1 text-[18px] font-normal tracking-[0.22em] text-white">
+			<span className="inline-block bg-black px-2 py-0 text-[18px] font-normal tracking-[4px] text-white">
 			{children}
 			</span>
 		</h5>
@@ -95,24 +95,25 @@ export default function Home() {
 				</div>
 			</div>
 
-			<header
-				id="home"
-				className="relative min-h-[75vh] bg-[url('https://www.w3schools.com/w3images/coffeehouse.jpg')] bg-cover bg-center"
-			>
-				<div className="absolute bottom-3 left-3 hidden bg-black px-2 py-1 text-[15px] text-white sm:block">
-					Open from 6am to 5pm
-				</div>
-				<div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white">
-					<span className="block text-[90px] leading-normal">the</span>
-					<span className="block text-[90px] leading-normal">Cafe</span>
-				</div>
-				<div className="absolute bottom-3 right-3 px-2 py-1 text-[15px] text-white">
-					15 Adr street, 5015
-				</div>
-			</header>
+			<div className="bg-[#fdf5e6] filter-[grayscale(60%)]">
+				<header
+					id="home"
+					className="relative min-h-[75vh] bg-[url('https://www.w3schools.com/w3images/coffeehouse.jpg')] bg-cover bg-center"
+				>
+					<div className="absolute bottom-3 left-3 hidden bg-black px-2 py-0 text-[15px] text-white sm:block">
+						Open from 6am to 5pm
+					</div>
+					<div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-white">
+						<span className="block text-[90px] leading-normal">the</span>
+						<span className="block text-[90px] leading-normal">Cafe</span>
+					</div>
+					<div className="absolute bottom-3 right-3 px-2 py-0 text-[15px] text-white">
+						15 Adr street, 5015
+					</div>
+				</header>
 
-			<div className="mx-auto max-w-175 px-4">
-				<section id="about" className="py-16">
+				<div className="mx-auto max-w-175 px-4">
+				<section id="about" className="py-0">
 					<SectionLabel>ABOUT THE CAFE</SectionLabel>
 
 					<p className="my-4.5">
@@ -150,7 +151,7 @@ export default function Home() {
 					</p>
 				</section>
 
-				<section id="menu" className="py-16">
+				<section id="menu" className="py-0">
 					<SectionLabel>THE MENU</SectionLabel>
 
 					<div className="mx-auto max-w-175">
@@ -177,7 +178,7 @@ export default function Home() {
 						</button>
 						</div>
 
-						<div className="bg-white px-4 py-12 shadow-[0_2px_5px_0_rgba(0,0,0,0.16),0_2px_10px_0_rgba(0,0,0,0.12)]">
+						<div className="px-4 py-12 space-y-6 shadow-[0_2px_5px_0_rgba(0,0,0,0.16),0_2px_10px_0_rgba(0,0,0,0.12)]">
 							{menuItems.map((item) => (
 								<div key={item.name}>
 									<h5 className="my-0 text-[18px] font-normal">{item.name}</h5>
@@ -196,7 +197,7 @@ export default function Home() {
 					/>
 				</section>
 
-				<section id="where" className="py-16">
+				<section id="where" className="py-0">
 					<SectionLabel>WHERE TO FIND US</SectionLabel>
 
 					<p className="my-4.5">Find us at some address at some place.</p>
@@ -248,7 +249,7 @@ export default function Home() {
 						<p className="my-4.5">
 							<input
 								type="text"
-								placeholder="Message \\ Special requirements"
+								placeholder="Message \ Special requirements"
 								required
 								className="block w-full border border-[#ccc] bg-white px-4 py-4"
 							/>
@@ -263,6 +264,7 @@ export default function Home() {
 						</p>
 					</form>
 				</section>
+				</div>
 			</div>
 
 			<footer className="bg-[#f1f1f1] px-4 py-12 text-center text-[18px]">

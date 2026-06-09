@@ -68,7 +68,7 @@ const drinkMenu = [
 function SectionLabel({ children }: { children: string }) {
 	return (
 		<h5 className="py-16 text-center">
-			<span className="inline-block bg-black px-2 py-0 text-[18px] font-normal tracking-[4px] text-white">
+			<span className="segoe-ui inline-block bg-black px-2 py-0 text-[18px] font-normal tracking-[4px] text-white">
 			{children}
 			</span>
 		</h5>
@@ -76,8 +76,8 @@ function SectionLabel({ children }: { children: string }) {
 }
 
 export default function Home() {
-	const [activeTab, setActiveTab] = useState<"eat" | "drink">("drink");
-	const menuItems = activeTab === "eat" ? eatMenu : drinkMenu;
+	const [selectedMenuTab, setActiveTab] = useState<"eat" | "drink">("drink");
+	const visibleMenuItems = selectedMenuTab === "eat" ? eatMenu : drinkMenu;
 
 	return (
 		<main className="scroll-smooth bg-[#fdf5e6] text-[18px] leading-normal text-black">
@@ -160,7 +160,7 @@ export default function Home() {
 							type="button"
 							onClick={() => setActiveTab("eat")}
 							className={`m-0 block px-4 py-0 text-[18px] ${
-								activeTab === "eat" ? "bg-[#616161] text-white" : "bg-transparent text-black"
+								selectedMenuTab === "eat" ? "bg-[#616161] text-white" : "bg-transparent text-black"
 							}`}
 						>
 							Eat
@@ -169,7 +169,7 @@ export default function Home() {
 							type="button"
 							onClick={() => setActiveTab("drink")}
 							className={`m-0 block px-4 py-0 text-[18px] ${
-								activeTab === "drink"
+								selectedMenuTab === "drink"
 									? "bg-[#616161] text-white"
 									: "bg-transparent text-black"
 							}`}
@@ -178,10 +178,10 @@ export default function Home() {
 						</button>
 						</div>
 
-						<div className="px-4 py-12 space-y-6 shadow-[0_2px_5px_0_rgba(0,0,0,0.16),0_2px_10px_0_rgba(0,0,0,0.12)]">
-							{menuItems.map((item) => (
+						<div className="px-4 py-12 space-y-16 shadow-[0_2px_5px_0_rgba(0,0,0,0.16),0_2px_10px_0_rgba(0,0,0,0.12)]">
+							{visibleMenuItems.map((item) => (
 								<div key={item.name}>
-									<h5 className="my-0 text-[18px] font-normal">{item.name}</h5>
+									<h5 className="segoe-ui my-0 text-[18px] font-normal">{item.name}</h5>
 									<p className="my-4.5 text-[#757575]">
 										{item.description} {item.price}
 									</p>

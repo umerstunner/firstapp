@@ -1,0 +1,881 @@
+"use client";
+import {useState,useEffect} from "react";
+const IMG = "https://www.makecloud.com";
+
+const trustedClients = [
+	{ name: "PEI Group", image: `${IMG}/_next/image?url=%2FPEI_Logo.jpg&w=3840&q=75` },
+	{ name: "67 Bricks", image: `${IMG}/67bricks-logo-black.svg` },
+	{ name: "Data Language", image: `${IMG}/_next/image?url=%2FData-Languge.png&w=3840&q=60` },
+	{ name: "Qatalog", image: `${IMG}/_next/image?url=%2FQatalog.png&w=3840&q=60` },
+	{ name: "Brilliant Planet", image: `${IMG}/_next/image?url=%2Fbrilliant-planet-cropped.jpg&w=3840&q=75` },
+];
+
+const services = [
+	{
+		title: "AWS DevOps",
+		description:
+			"Accelerate delivery with CI/CD pipelines, infrastructure as code, and automated deployments built on AWS-native tooling.",
+		href: "/aws-devops-support",
+		icon: (
+			<path
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
+			/>
+		),
+	},
+	{
+		title: "AWS Managed Cloud Services",
+		description:
+			"Round-the-clock monitoring, patching, and optimisation of your AWS environment. We keep your infrastructure running so your team doesn't have to.",
+		icon: (
+			<path
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z"
+			/>
+		),
+	},
+	{
+		title: "AWS Security & Compliance",
+		description:
+			"Protect your data and meet regulatory requirements with security architectures, audits, and automated compliance frameworks built for AWS.",
+		href: "/aws-security",
+		icon: (
+			<path
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"
+			/>
+		),
+	},
+	{
+		title: "AWS Cost Management & FinOps",
+		description:
+			"Take control of your cloud spend. We identify savings, right-size resources, and implement governance to maximise your return on AWS investment.",
+		href: "/aws-cost-management-finops",
+		icon: (
+			<path
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				d="M14.121 7.629A3 3 0 0 0 9.017 9.43c-.023.212-.002.425.028.636l.506 3.541a4.5 4.5 0 0 1-.43 2.65L9 16.5l1.539-.513a2.25 2.25 0 0 1 1.422 0l.655.218a2.25 2.25 0 0 0 1.718-.122L15 15.75M8.25 12H12m9 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+			/>
+		),
+	},
+	{
+		title: "AWS Gen AI",
+		description:
+			"Build production-ready generative AI applications on AWS with Amazon Bedrock, SageMaker, and RAG — from proof of concept to production.",
+		href: "/aws-gen-ai",
+		icon: (
+			<path
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"
+			/>
+		),
+	},
+	{
+		title: "AWS Cloud Migrations",
+		description:
+			"Seamlessly migrate your workloads to AWS with minimal disruption. We handle assessment, planning, and execution so you can focus on your business.",
+		href: "/aws-migration",
+		icon: (
+			<path
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z"
+			/>
+		),
+	},
+];
+
+const stats = [
+	{
+		value: "15+",
+		label: "AWS Certifications Held",
+		icon: (
+			<path
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"
+			/>
+		),
+	},
+	{
+		value: "45+",
+		label: "AWS Projects Delivered",
+		icon: (
+			<path
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"
+			/>
+		),
+	},
+	{
+		value: "£2m+",
+		label: "AWS Costs Saved For Our Customers",
+		icon: (
+			<path
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				d="M14.121 7.629A3 3 0 0 0 9.017 9.43c-.023.212-.002.425.028.636l.506 3.541a4.5 4.5 0 0 1-.43 2.65L9 16.5l1.539-.513a2.25 2.25 0 0 1 1.422 0l.655.218a2.25 2.25 0 0 0 1.718-.122L15 15.75M8.25 12H12m9 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+			/>
+		),
+	},
+	{
+		value: "30+",
+		label: "Years Combined AWS Experience",
+		icon: (
+			<path
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+			/>
+		),
+	},
+];
+
+const testimonials = [
+	{
+		client: "PEI Group",
+		logo: `${IMG}/_next/image?url=%2FPEI_Logo.jpg&w=256&q=75`,
+		quote:
+			"Quality AWS DevOps Engineers can be hard to find but quality is exactly what we found with MakeCloud. Their friendly and pragmatic approach made them a pleasure to work with, and I'd recommend them to anyone.",
+		name: "Neil Sayer",
+		title: "Head of Data and Data Platforms",
+		company: "PEI Group",
+	},
+	{
+		client: "67 Bricks",
+		logo: `${IMG}/67bricks-logo-black.svg`,
+		quote:
+			"MakeCloud took AWS infrastructure and compliance off our plate, so our team of technical experts could focus on delivering great products for our clients.",
+		name: "David Leeming",
+		title: "CTO",
+		company: "67 Bricks",
+	},
+];
+
+const insightCards = [
+	{
+		title: "AWS Backups FAQ",
+		date: "April 14, 2026",
+		description:
+			"From cross-account replication to restore testing, here are the five AWS Backup questions we hear most and our answers.",
+		image:
+			"https://cdn.sanity.io/images/wjb35rr9/production/7707f9e7db061dd4b9db1133092d110f777f41fd-750x375.webp?auto=format&crop=entropy&fit=crop&h=210&q=75&w=400",
+		imageAlt: "Illustration of AWS cloud backup architecture with cross-account and cross-region replication",
+		author: "Philip Wigg",
+		avatar:
+			"https://cdn.sanity.io/images/wjb35rr9/production/93d3040abc130ad6c7ef7fd1f73b231096419902-512x512.jpg?auto=format&fit=max&q=75&w=40",
+	},
+	{
+		title: "Top Business Outcomes Companies Achieve with Datadog",
+		date: "March 11, 2026",
+		description:
+			"Discover the latest insights from Datadog Partner Day and explore the top business outcomes organisations are achieving with Datadog.",
+		image:
+			"https://cdn.sanity.io/images/wjb35rr9/production/0c59efa799cd00c177057f3fcc46ac21f8a609c8-1366x768.png?auto=format&crop=entropy&fit=crop&h=210&q=75&w=400",
+		imageAlt: "Datadog partner network",
+		author: "Rachael Kingston",
+		avatar:
+			"https://cdn.sanity.io/images/wjb35rr9/production/93d3040abc130ad6c7ef7fd1f73b231096419902-512x512.jpg?auto=format&fit=max&q=75&w=40",
+	},
+	{
+		title: "Scale AWS Without Losing Control: The Role of AWS Control Tower",
+		date: "May 18, 2026",
+		description: "Learn how AWS Control Tower helps businesses scale Amazon Web Services securely.",
+		image:
+			"https://cdn.sanity.io/images/wjb35rr9/production/955e9a583de2573b6ca5208e9d5025be1f5dbd59-1195x672.png?auto=format&crop=entropy&fit=crop&h=210&q=75&w=400",
+		imageAlt: "Scale AWS Without Losing Control: The Role of AWS Control Tower",
+		author: "Philip Wigg",
+		avatar:
+			"https://cdn.sanity.io/images/wjb35rr9/production/93d3040abc130ad6c7ef7fd1f73b231096419902-512x512.jpg?auto=format&fit=max&q=75&w=40",
+	},
+];
+
+const footerServiceLinks = [
+	{ label: "AWS Reseller Program", href: "/aws-reseller-program-uk" },
+	{ label: "AWS Consultancy", href: "/aws-consultancy" },
+	{ label: "AWS Managed Services Provider", href: "/aws-managed-cloud-services" },
+	{ label: "AWS Security & Compliance", href: "/aws-security" },
+	{ label: "AWS DevOps", href: "/aws-devops-support" },
+	{ label: "AWS Cost Management & FinOps", href: "/aws-cost-management-finops" },
+	{ label: "AWS Cloud Migrations", href: "/aws-migration" },
+	{ label: "AWS Gen AI", href: "/aws-gen-ai" },
+	{ label: "Datadog Implementation", href: "/datadog-implementation" },
+];
+
+const footerIndustryLinks = [
+	{ label: "Agritech", href: "/aws-agritech" },
+	{ label: "Fintech", href: "/aws-fintech" },
+	{ label: "Media & Publishing", href: "/aws-media" },
+	{ label: "Public Sector", href: "/aws-public-sector" },
+	{ label: "Startup", href: "/aws-for-startups" },
+];
+
+const footerCompanyLinks = [
+	{ label: "About Us", href: "/about" },
+	{ label: "Case Studies", href: "/case-studies" },
+	{ label: "Insights", href: "/insights" },
+	{ label: "Careers", href: "/careers" },
+	{ label: "Directories", href: "/directories" },
+];
+
+const footerLegalLinks = [
+	{ label: "Privacy Policy", href: "/privacy-policy" },
+	{ label: "Terms of Service", href: "/terms-of-service" },
+	{ label: "Cookie Policy", href: "/cookie-policy" },
+];
+
+function IconArrowUpRight({ className = "size-5" }: { className?: string }) {
+	return (
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={className} aria-hidden="true">
+			<path
+				fillRule="evenodd"
+				d="M5.22 14.78a.75.75 0 0 1 0-1.06l7.22-7.22H8.75a.75.75 0 0 1 0-1.5h5.5a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0V7.06l-7.22 7.22a.75.75 0 0 1-1.06 0Z"
+				clipRule="evenodd"
+			/>
+		</svg>
+	);
+}
+
+function IconPhone({ className = "size-4" }: { className?: string }) {
+	return (
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={className} aria-hidden="true">
+			<path
+				fillRule="evenodd"
+				d="M2 3.5A1.5 1.5 0 0 1 3.5 2h1.148a1.5 1.5 0 0 1 1.465 1.175l.716 3.223a1.5 1.5 0 0 1-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 0 0 6.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 0 1 1.767-1.052l3.223.716A1.5 1.5 0 0 1 18 15.352V16.5a1.5 1.5 0 0 1-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 0 1 2.43 8.326 13.019 13.019 0 0 1 2 5V3.5Z"
+				clipRule="evenodd"
+			/>
+		</svg>
+	);
+}
+
+function IconChevronDown({ className = "size-5" }: { className?: string }) {
+	return (
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={className} aria-hidden="true">
+			<path
+				fillRule="evenodd"
+				d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+				clipRule="evenodd"
+			/>
+		</svg>
+	);
+}
+
+function ServiceIcon({ children }: { children: React.ReactNode }) {
+	return (
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			fill="none"
+			viewBox="0 0 24 24"
+			strokeWidth={1.5}
+			stroke="currentColor"
+			aria-hidden="true"
+			className="size-5 shrink-0 text-red-600 group-hover:text-white"
+		>
+			{children}
+		</svg>
+	);
+}
+
+function StatIcon({ children }: { children: React.ReactNode }) {
+	return (
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			fill="none"
+			viewBox="0 0 24 24"
+			strokeWidth={1.5}
+			stroke="currentColor"
+			aria-hidden="true"
+			className="size-6 text-red-600"
+		>
+			{children}
+		</svg>
+	);
+}
+
+function HeroGridPattern() {
+	return (
+		<svg
+			aria-hidden="true"
+			className="absolute inset-0 -z-10 h-full w-full stroke-gray-300 [mask-image:radial-gradient(100%_100%_at_top_right,rgba(255,255,255,0.5),rgba(255,255,255,0.1))]"
+		>
+			<defs>
+				<pattern id="hero-grid" width="40" height="40" x="50%" y="-1" patternUnits="userSpaceOnUse">
+					<path d="M.5 40V.5H40" fill="none" />
+				</pattern>
+			</defs>
+			<rect width="100%" height="100%" strokeWidth="0" fill="url(#hero-grid)" />
+		</svg>
+	);
+}
+
+export default function MakeCloudPage() {
+	const [isSticky, setIsSticky] = useState(false);
+
+	useEffect(() => {
+    const handleScroll = () => {
+        setIsSticky(window.scrollY > 80);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+        window.removeEventListener("scroll", handleScroll);
+    };
+}, []);
+
+	return (
+		<section className="makecloud-page min-h-screen overflow-x-clip bg-white text-black">
+			<header className={` z-40 px-4 pt-4  transition-all duration-500 ease-out sm:px-6 lg:px-8 ${isSticky ? 'sticky top-0 left-0 animate-navbar-slide py-3' : 'relative pt-4'}`}>
+				<nav className=" mx-auto flex max-w-7xl items-center justify-between rounded-2xl bg-white px-6 py-4 shadow-sm ring-1 ring-gray-200 transition-all duration-500 ease-out ${isSticky ? 'animate-navbar-slide' : ''}">
+					<div className="flex lg:flex-1">
+						<a href="/" className="-m-1.5 p-1.5">
+							<span className="sr-only">MakeCloud</span>
+							<img
+								alt="MakeCloud"
+								src={`${IMG}/_next/image?url=%2Fmakecloud-logo-red-and-black.png&w=3840&q=75`}
+								className="h-10 w-auto max-w-[200px] translate-y-0.5"
+							/>
+						</a>
+					</div>
+
+					<div className="flex lg:hidden">
+						<button type="button" className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
+							<span className="sr-only">Open main menu</span>
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true" className="size-6">
+								<path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+							</svg>
+						</button>
+					</div>
+
+					<div className="hidden lg:flex lg:gap-x-8">
+						<div className="group/services flex items-center gap-x-0.5 rounded-md transition-colors hover:bg-red-600">
+							<a href="/services" className="py-1.5 pl-3 text-base/6 font-semibold text-gray-900 group-hover/services:text-white">
+								Services
+							</a>
+							<button type="button" aria-label="Show services menu" className="py-1.5 pr-2 focus:outline-none">
+								<IconChevronDown className="flex-none text-gray-400 group-hover/services:text-white" />
+							</button>
+						</div>
+						<div className="group/industries flex items-center gap-x-0.5 rounded-md transition-colors hover:bg-red-600">
+							<span className="cursor-default py-1.5 pl-3 text-base/6 font-semibold text-gray-900 group-hover/industries:text-white">
+								Industries
+							</span>
+							<button type="button" aria-label="Show industries menu" className="py-1.5 pr-2 focus:outline-none">
+								<IconChevronDown className="flex-none text-gray-400 group-hover/industries:text-white" />
+							</button>
+						</div>
+						<a href="/case-studies" className="rounded-md px-3 py-1.5 text-base/6 font-semibold text-gray-900 transition-colors hover:bg-red-600 hover:text-white">
+							Case Studies
+						</a>
+						<a href="/insights" className="rounded-md px-3 py-1.5 text-base/6 font-semibold text-gray-900 transition-colors hover:bg-red-600 hover:text-white">
+							Insights
+						</a>
+						<a href="/about" className="rounded-md px-3 py-1.5 text-base/6 font-semibold text-gray-900 transition-colors hover:bg-red-600 hover:text-white">
+							About Us
+						</a>
+					</div>
+
+					<div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:gap-x-5">
+						<a href="tel:+442036378933" className="flex items-center gap-x-1.5 text-sm font-semibold text-red-600 hover:text-red-500">
+							<IconPhone />
+							020 3637 8933
+						</a>
+						<a
+							href="/contact"
+							className="rounded-md bg-red-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+						>
+							Contact Us
+						</a>
+					</div>
+				</nav>
+			</header>
+
+			<main>
+				<div className="relative isolate -mt-20 overflow-hidden bg-gray-50/60">
+					<div className="mx-auto max-w-7xl px-6 pt-40 pb-16 sm:pt-48 sm:pb-20 lg:px-8">
+						<div className="relative mx-auto max-w-3xl text-center">
+							<h1 className="text-5xl leading-tight font-semibold tracking-tight text-balance text-gray-900 sm:text-[5rem] sm:leading-tight">
+								Secure, reliable AWS for UK SMBs
+							</h1>
+							<p className="mx-auto mt-6 max-w-xl text-sm font-medium text-pretty text-gray-500 sm:text-base/7">
+								We manage your AWS so your dev team can focus on building product. DevOps, security, cost optimisation, and disaster recovery - handled by senior AWS engineers who do this all day, every day.
+							</p>
+							<div className="mt-10 flex justify-center">
+								<a
+									href="/contact"
+									className="inline-flex items-center gap-x-2 rounded-md bg-red-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+								>
+									Speak to an AWS Expert Today
+									<IconArrowUpRight />
+								</a>
+							</div>
+							<img
+								alt="MakeCloud is an AWS Advanced Tier Services Partner"
+								src={`${IMG}/_next/image?url=%2Faws-partner-badge.png&w=3840&q=75`}
+								className="mx-auto mt-8 max-w-28 object-contain sm:max-w-32 lg:absolute lg:right-0 lg:bottom-0 lg:mx-0 lg:mt-0 lg:max-w-48 lg:translate-x-full"
+							/>
+						</div>
+					</div>
+					<HeroGridPattern />
+					<div className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-linear-to-t from-white sm:h-32" />
+				</div>
+
+				<div className="bg-white pb-12 sm:pb-16">
+					<div className="mx-auto max-w-7xl px-6 lg:px-8">
+						<p className="text-center text-sm font-semibold tracking-wider text-gray-400 uppercase">Trusted by</p>
+						<div className="mx-auto mt-6 flex flex-wrap items-center justify-center gap-x-12 gap-y-6 lg:justify-between">
+							{trustedClients.map((client) => (
+								<img
+									key={client.name}
+									alt={client.name}
+									src={client.image}
+									className="h-7 object-contain opacity-60 grayscale sm:h-10"
+									style={{ width: "auto" }}
+								/>
+							))}
+						</div>
+					</div>
+				</div>
+
+				<div className="bg-gray-50/70 py-16 sm:py-20">
+					<div className="mx-auto max-w-7xl px-6 lg:px-8">
+						<div className="mx-auto max-w-2xl text-center">
+							<h2 className="text-base/7 font-semibold text-red-600">Our Services</h2>
+							<p className="font-heading mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
+								End-to-end AWS expertise
+							</p>
+							<p className="mt-6 text-lg/8 text-gray-700">
+								From migration to managed services, MakeCloud delivers the full spectrum of AWS capabilities your business needs to move faster and scale with confidence.
+							</p>
+						</div>
+						<div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-6 text-base/7 text-gray-600 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+							{services.map((service) => (
+								<div
+									key={service.title}
+									className={`group relative rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 ${
+										service.href ? "transition-all duration-200 hover:bg-red-600 hover:shadow-lg hover:ring-red-600" : ""
+									}`}
+								>
+									<h3 className={`flex items-center gap-x-3 font-semibold text-gray-900 ${service.href ? "group-hover:text-white" : ""}`}>
+										<ServiceIcon>{service.icon}</ServiceIcon>
+										{service.href ? (
+											<a href={service.href} className="before:absolute before:inset-0 before:content-['']">
+												{service.title}
+											</a>
+										) : (
+											service.title
+										)}
+									</h3>
+									<p className={`mt-2 ${service.href ? "group-hover:text-red-100" : ""}`}>{service.description}</p>
+								</div>
+							))}
+						</div>
+						<div className="mt-6 text-center">
+							<a href="/services" className="text-sm font-semibold text-red-600 hover:text-red-500">
+								View all services →
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div className="bg-white py-16 sm:py-20">
+					<div className="mx-auto max-w-7xl px-6 lg:px-8">
+						<div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-x-12 gap-y-10 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+							<img
+								alt="MakeCloud office"
+								src={`${IMG}/_next/image?url=%2FExterior-24-scaled-1400x800.jpg&w=3840&q=60`}
+								className="w-full rounded-2xl object-cover shadow-lg"
+							/>
+							<div>
+								<h2 className="font-heading text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+									Built by engineers who live and breathe AWS
+								</h2>
+								<p className="mt-6 text-lg/8 text-gray-600">
+									From our offices at the Rothamsted Agritech Centre in Harpenden, Hertfordshire — just 20 minutes by train from central London — we&apos;re a team of certified AWS specialists helping businesses migrate, optimise, and scale on the cloud.
+								</p>
+								<div className="mt-8">
+									<a
+										href="/about"
+										className="inline-flex items-center gap-x-2 rounded-md bg-red-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+									>
+										Learn more about us
+										<IconArrowUpRight />
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<section className="bg-gray-50/70 pt-16 pb-16 sm:pt-20 sm:pb-20">
+					<div className="mx-auto max-w-7xl px-6 lg:px-8">
+						<h2 className="text-center text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">What our clients say</h2>
+						<div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-6 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+							{testimonials.map((item) => (
+								<div key={item.client} className="flex flex-col rounded-xl bg-white p-8 shadow-sm ring-1 ring-gray-200">
+									<img alt={item.client} src={item.logo} className="h-12 self-start" style={{ width: "auto" }} />
+									<figure className="mt-10 flex flex-auto flex-col justify-between">
+										<blockquote className="text-lg/8 text-gray-900">
+											<p>&ldquo;{item.quote}&rdquo;</p>
+										</blockquote>
+										<figcaption className="mt-10">
+											<div className="text-base">
+												<div className="font-semibold text-gray-900">{item.name}</div>
+												<div className="mt-1 text-gray-500">
+													{item.title}, {item.company}
+												</div>
+											</div>
+										</figcaption>
+									</figure>
+								</div>
+							))}
+						</div>
+					</div>
+				</section>
+
+				<div className="bg-white pt-8 pb-16 sm:pt-10 sm:pb-20">
+					<div className="mx-auto max-w-7xl px-6 lg:px-8">
+						<h2 className="text-center text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">Trusted by</h2>
+						<div className="mx-auto mt-12 flex flex-wrap items-center justify-center gap-x-16 gap-y-8 lg:gap-x-24">
+							{trustedClients.map((client, index) => (
+								<img
+									key={`${client.name}-2`}
+									alt={client.name}
+									src={client.image}
+									className={`h-12 w-auto object-contain ${index === 2 ? "grayscale" : ""}`}
+								/>
+							))}
+						</div>
+						<div className="mt-12 flex justify-center">
+							<a
+								href="/case-studies"
+								className="inline-flex items-center gap-x-2 rounded-md bg-red-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+							>
+								Read our customer stories
+								<IconArrowUpRight />
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div className="bg-gray-50/70 py-16 sm:py-20">
+					<div className="mx-auto max-w-7xl px-6 lg:px-8">
+						<div className="mx-auto max-w-2xl lg:max-w-none">
+							<div className="text-center">
+								<h2 className="text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">
+									Built on expertise, proven by results
+								</h2>
+								<p className="mt-4 text-lg/8 text-gray-600">
+									Our certified engineers bring deep AWS consultancy expertise to every engagement.
+								</p>
+							</div>
+							<div className="mt-16 grid grid-cols-1 gap-6 text-center sm:grid-cols-2 lg:grid-cols-4">
+								{stats.map((stat) => (
+									<div key={stat.label} className="flex flex-col items-center rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200">
+										<div className="flex size-12 items-center justify-center rounded-full bg-red-50">
+											<StatIcon>{stat.icon}</StatIcon>
+										</div>
+										<p className="font-heading mt-4 text-3xl font-semibold tracking-tight text-gray-900">{stat.value}</p>
+										<p className="mt-1 text-sm/6 font-semibold text-gray-600">{stat.label}</p>
+									</div>
+								))}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div className="bg-white py-16 sm:py-20">
+					<div className="mx-auto max-w-7xl px-6 lg:px-8">
+						<div className="mx-auto max-w-2xl text-center">
+							<h2 className="font-heading text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">Latest insights</h2>
+							<p className="mt-2 text-lg/8 text-gray-600">Cloud strategy, AWS best practices, and lessons from the field.</p>
+						</div>
+						<div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+							{insightCards.map((card) => (
+								<article
+									key={card.title}
+									className="flex flex-col items-start justify-between rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-200"
+								>
+									<div className="relative w-full">
+										<img alt={card.imageAlt} src={card.image} className="aspect-[1024/538] w-full rounded-2xl bg-gray-100 object-cover" />
+										<div className="absolute inset-0 rounded-2xl inset-ring inset-ring-gray-900/10" />
+									</div>
+									<div className="flex max-w-xl grow flex-col justify-between">
+										<div className="mt-8 flex items-center gap-x-4 text-xs">
+											<time className="text-gray-500">{card.date}</time>
+										</div>
+										<div className="group relative grow">
+											<h3 className="mt-3 text-lg/6 font-semibold text-gray-900 group-hover:text-gray-600">
+												<a href="#">
+													<span className="absolute inset-0" />
+													{card.title}
+												</a>
+											</h3>
+											<p className="mt-5 line-clamp-3 text-sm/6 text-gray-600">{card.description}</p>
+										</div>
+										<div className="relative mt-8 flex items-center gap-x-4 justify-self-end">
+											<img alt={card.author} src={card.avatar} className="size-10 rounded-full bg-gray-100" />
+											<div className="text-sm/6">
+												<p className="font-semibold text-gray-900">{card.author}</p>
+											</div>
+										</div>
+									</div>
+								</article>
+							))}
+						</div>
+						<div className="mt-12 text-center">
+							<a href="/insights" className="text-base font-semibold text-red-600 hover:text-red-500">
+								View all insights →
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<div className="bg-gray-50/70 pt-16 pb-16 sm:pt-20 sm:pb-20">
+					<div className="mx-auto max-w-7xl px-6 lg:px-8">
+						<div className="grid grid-cols-1 items-center gap-x-16 gap-y-10 lg:grid-cols-2">
+							<div className="relative overflow-hidden rounded-2xl">
+								<img
+									alt=""
+									src={`${IMG}/_next/image?url=%2Fservice-cta-bg.jpg&w=3840&q=75`}
+									className="aspect-[4/3] w-full object-cover"
+								/>
+							</div>
+							<div>
+								<h2 className="text-base/7 font-semibold text-red-600">AWS Advanced Tier Services Partner</h2>
+								<p className="font-heading mt-2 text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">Ready to get started?</p>
+								<p className="mt-6 text-base/7 text-gray-600">
+									Book a free, no-obligation call with one of our AWS-certified engineers. We&apos;ll listen to your challenges, share honest advice, and only recommend next steps if we genuinely think we can help.
+								</p>
+								<div className="mt-8">
+									<a
+										href="/contact"
+										className="inline-flex items-center gap-x-2 rounded-md bg-red-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+									>
+										Talk to an AWS expert today
+										<IconArrowUpRight />
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</main>
+
+			<footer className="bg-gray-950">
+				<div className="mx-auto max-w-7xl px-6 pt-20 pb-8 sm:pt-24 lg:px-8 lg:pt-32">
+					<div className="xl:grid xl:grid-cols-3 xl:gap-8">
+						<div className="grid grid-cols-2 gap-8 md:grid-cols-4 xl:col-span-2">
+							<div>
+								<h3 className="text-sm/6 font-semibold text-white">Services</h3>
+								<ul role="list" className="mt-6 space-y-4">
+									{footerServiceLinks.map((item) => (
+										<li key={item.label}>
+											<a href={item.href} className="text-sm/6 text-gray-400 hover:text-white">
+												{item.label}
+											</a>
+										</li>
+									))}
+								</ul>
+							</div>
+							<div>
+								<h3 className="text-sm/6 font-semibold text-white">Industries</h3>
+								<ul role="list" className="mt-6 space-y-4">
+									{footerIndustryLinks.map((item) => (
+										<li key={item.label}>
+											<a href={item.href} className="text-sm/6 text-gray-400 hover:text-white">
+												{item.label}
+											</a>
+										</li>
+									))}
+								</ul>
+							</div>
+							<div>
+								<h3 className="text-sm/6 font-semibold text-white">Company</h3>
+								<ul role="list" className="mt-6 space-y-4">
+									{footerCompanyLinks.map((item) => (
+										<li key={item.label}>
+											<a href={item.href} className="text-sm/6 text-gray-400 hover:text-white">
+												{item.label}
+											</a>
+										</li>
+									))}
+								</ul>
+							</div>
+							<div>
+								<h3 className="text-sm/6 font-semibold text-white">Legal</h3>
+								<ul role="list" className="mt-6 space-y-4">
+									{footerLegalLinks.map((item) => (
+										<li key={item.label}>
+											<a href={item.href} className="text-sm/6 text-gray-400 hover:text-white">
+												{item.label}
+											</a>
+										</li>
+									))}
+								</ul>
+							</div>
+						</div>
+
+						<div className="mt-10 xl:mt-0">
+							<h3 className="text-sm/6 font-semibold text-white">Subscribe to our newsletter</h3>
+							<p className="mt-2 text-sm/6 text-gray-400">AWS insights, cloud tips, and MakeCloud news delivered to your inbox.</p>
+							<form className="mt-6 sm:max-w-md">
+								<div className="sm:flex">
+									<label htmlFor="email-address" className="sr-only">
+										Email address
+									</label>
+									<input
+										id="email-address"
+										type="email"
+										required
+										placeholder="Enter your email"
+										autoComplete="email"
+										name="email-address"
+										className="w-full min-w-0 rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-red-500 sm:w-64 sm:text-sm/6 xl:w-full"
+									/>
+									<div className="mt-4 sm:mt-0 sm:ml-4 sm:shrink-0">
+										<button
+											type="submit"
+											className="flex w-full items-center justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 disabled:opacity-50"
+										>
+											Subscribe
+										</button>
+									</div>
+								</div>
+							</form>
+
+							<h3 className="mt-8 text-sm/6 font-semibold text-white">Contact us</h3>
+							<dl className="mt-4 space-y-3 text-sm/6">
+								<div className="flex items-center gap-x-2.5">
+									<dt>
+										<IconPhone className="text-gray-500" />
+										<span className="sr-only">Phone</span>
+									</dt>
+									<dd>
+										<a href="tel:+442036378933" className="text-gray-400 hover:text-white">
+											020 3637 8933
+										</a>
+									</dd>
+								</div>
+								<div className="flex items-center gap-x-2.5">
+									<dt>
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="size-4 text-gray-500">
+											<path d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1.25 1.25 0 0 0 1.118 0L19 7.162V6a2 2 0 0 0-2-2H3Z" />
+											<path d="m19 8.839-7.77 3.885a2.75 2.75 0 0 1-2.46 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z" />
+										</svg>
+										<span className="sr-only">Email</span>
+									</dt>
+									<dd>
+										<a href="mailto:hello@makecloud.com" className="text-gray-400 hover:text-white">
+											hello@makecloud.com
+										</a>
+									</dd>
+								</div>
+								<div className="flex items-start gap-x-2.5">
+									<dt className="mt-0.5">
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="size-4 shrink-0 text-gray-500">
+											<path
+												fillRule="evenodd"
+												d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 1 0 3 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 0 0 2.273 1.765 11.842 11.842 0 0 0 .976.544l.062.029.018.008.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z"
+												clipRule="evenodd"
+											/>
+										</svg>
+										<span className="sr-only">Address</span>
+									</dt>
+									<dd className="text-gray-400">
+										MakeCloud Limited
+										<br />
+										Rothamsted Enterprises
+										<br />
+										Harpenden AL5 2JQ
+									</dd>
+								</div>
+							</dl>
+						</div>
+					</div>
+
+					<div className="mt-16 border-t border-white/10 pt-8 sm:mt-20 lg:mt-24">
+						<div className="xl:grid xl:grid-cols-3 xl:gap-8">
+							<div className="xl:col-span-2">
+								<h3 className="text-sm/6 font-semibold text-white">Follow Us</h3>
+								<div className="mt-4 flex gap-x-5">
+									<a href="https://www.linkedin.com/company/makecloud-devops-cloud-consultancy/" className="text-gray-400 hover:text-white">
+										<span className="sr-only">LinkedIn</span>
+										<svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" className="size-6">
+											<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+										</svg>
+									</a>
+									<a href="https://x.com/MakeCloud418" className="text-gray-400 hover:text-white">
+										<span className="sr-only">X</span>
+										<svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" className="size-6">
+											<path d="M13.6823 10.6218L20.2391 3H18.6854L12.9921 9.61788L8.44486 3H3.2002L10.0765 13.0074L3.2002 21H4.75404L10.7663 14.0113L15.5685 21H20.8131L13.6819 10.6218H13.6823ZM11.5541 13.0956L10.8574 12.0991L5.31391 4.16971H7.70053L12.1742 10.5689L12.8709 11.5655L18.6861 19.8835H16.2995L11.5541 13.096V13.0956Z" />
+										</svg>
+									</a>
+									<a href="https://github.com/MakeCloudHQ" className="text-gray-400 hover:text-white">
+										<span className="sr-only">GitHub</span>
+										<svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" className="size-6">
+											<path
+												fillRule="evenodd"
+												d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+												clipRule="evenodd"
+											/>
+										</svg>
+									</a>
+									<a href="https://www.instagram.com/makecloud_com/" className="text-gray-400 hover:text-white">
+										<span className="sr-only">Instagram</span>
+										<svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" className="size-6">
+											<path
+												fillRule="evenodd"
+												d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"
+												clipRule="evenodd"
+											/>
+										</svg>
+									</a>
+								</div>
+							</div>
+							<div className="mt-8 xl:mt-0">
+								<h3 className="text-sm/6 font-semibold text-white">Our Credentials</h3>
+								<div className="mt-4 flex items-center gap-x-6">
+									<a
+										href="https://www.applytosupply.digitalmarketplace.service.gov.uk/g-cloud/search?q=MakeCloud&lot=cloud-support"
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										<span className="sr-only">MakeCloud on the G-Cloud Crown Commercial Service framework</span>
+										<img
+											alt="MakeCloud — G-Cloud Crown Commercial Service Supplier"
+											src={`${IMG}/_next/image?url=%2Fgcloud-crown-commercial-service-white.png&w=3840&q=75`}
+											className="h-[5.625rem] w-auto"
+										/>
+									</a>
+									<a
+										href="https://aws.amazon.com/marketplace/seller-profile?id=seller-3opmpamshd6w2"
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										<span className="sr-only">MakeCloud on AWS Marketplace</span>
+										<img
+											alt="MakeCloud — AWS Marketplace seller"
+											src={`${IMG}/_next/image?url=%2Faws-marketplace-white.png&w=3840&q=75`}
+											className="h-18 w-auto rounded"
+										/>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className="mt-8 border-t border-white/10 pt-8">
+						<p className="text-sm/6 text-gray-400">© 2026 MakeCloud | Harpenden, Hertfordshire | Company Reg 06262259</p>
+					</div>
+				</div>
+			</footer>
+		</section>
+	);
+}
